@@ -9,8 +9,10 @@
 #define TIMEPERIOD 250
 #define STRLENGTH 144
 int led = 13;
+int sizeArray;
 int bankIndex = 0;
 char letterBank[STRLENGTH];
+
 
 void setup(){
   Serial.begin(9600);      // Setting up serial connection
@@ -21,17 +23,21 @@ void setup(){
 }
 
 void loop(){
-  /* This serial connection needs to be fixed. It winds up stuck
-     stuck in an infinite return loop when characters are not 
-     being entered. It needs to prompt, wait, the return */
-  if( Serial.available()){      
-    char letter = Serial.read();
-    if( letter == '\r'){ 
-     letterBank[ bankIndex ] = 0; 
-      // send to morse convertion
-    }else{ letterBank[ bankIndex++ ] = letter; }
+  /* Now the serial conversation is only picking up the first letter */
+  letterBank[0] = 0;
+  if( Serial.available() > 0){        // check for content
+    char letter = Serial.read();        
+    letterBank[ bankIndex ] = letter; // add character to bank
+    bankIndex++;                      // increment index
   }
-  Serial.println();
+  
+  sizeArray = sizeof(letterBank);
+  if(letterBank[0] != 0){
+    Serial.println(letterBank);                   // Test
+    Serial.println(sizeArray);                    // Test
+    morseStringConversion(letterBank, sizeArray); // Convert Msg
+    Serial.println("STOP");                       // End
+  }
 }
 
 void dot(){
@@ -46,6 +52,12 @@ void dash(){
   delay(TIMEPERIOD * 3);    // leave on for three time units
   digitalWrite(led, LOW);   // turn off LED
   delay(TIMEPERIOD);        // leave off for one time unit
+}
+
+void morseStringConversion(char letterArray[], int n){
+  for (int i=0; i<n; i++){
+    morseCharConversion(letterArray[i]);
+  }
 }
 
 void morseCharConversion(char letter){
