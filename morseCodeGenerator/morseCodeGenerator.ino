@@ -4,6 +4,14 @@
   V.1
   28 February 2014
   Arduino Mega 2560 R3
+  
+  This program uses a serial connection with the Arduino Mega board to take a user
+  inputted string from the serial monitor to be converted into morse code. Each
+  character is individually converted and sent to the serial monitor and the LED on
+  the Arduino Mega before moving onto the next character. In the future I would like
+  to clean up the morseCharConversion function as the enormous list of switch 
+  statements makes the programmer inside me cringe. If you have any suggestions
+  feel free to let me know.
 */
 
 #define TIMEPERIOD 250
@@ -11,8 +19,7 @@
 int led = 13;
 int sizeArray;
 int bankIndex = 0;
-char letterBank[STRLENGTH];
-
+char letterBank[STRLENGTH]; 
 
 void setup(){
   Serial.begin(9600);      // Setting up serial connection
@@ -20,22 +27,32 @@ void setup(){
   
   Serial.println("Enter the message you would like converted to morse.");
   Serial.println("Keep in mind you only have 144 characters and no apostrophes: ");
+  Serial.println();
 }
 
 void loop(){
-  /* Now the serial conversation is only picking up the first letter */
-  letterBank[0] = 0;
-  if( Serial.available() > 0){        // check for content
-    char letter = Serial.read();        
-    letterBank[ bankIndex ] = letter; // add character to bank
-    bankIndex++;                      // increment index
+  for(int i=0; i<STRLENGTH; i++){       // Initialize bank for testing purposes as
+                                        // as well as allowing for multiple
+                                        // converisons per serail connection
+    letterBank[i] = 0;
   }
   
+  int letter;
+  while( Serial.available()){           // check for content
+    delay(10);
+    if(Serial.available()>0){
+      letter = Serial.read();           // temp value       
+      letterBank[bankIndex] = letter;   // add to bank
+      bankIndex++;                      // increment index
+    }
+  }
+
   sizeArray = sizeof(letterBank);
   if(letterBank[0] != 0){
-    Serial.println(letterBank);                   // Test
-    Serial.println(sizeArray);                    // Test
-    morseStringConversion(letterBank, sizeArray); // Convert Msg
+    Serial.print("Conversion Requested: ");       // Confirmation part 1
+    Serial.println(letterBank);                       // Confirmation part 2
+    Serial.println();
+    morseStringConversion(letterBank, bankIndex); // Conversion
     Serial.println("STOP");                       // End
   }
 }
@@ -56,8 +73,16 @@ void dash(){
 
 void morseStringConversion(char letterArray[], int n){
   for (int i=0; i<n; i++){
-    morseCharConversion(letterArray[i]);
+    if(letterArray !=0){
+      Serial.print("'");
+      Serial.print(letterArray[i]);
+      Serial.print("': ");
+      morseCharConversion(letterArray[i]);
+    }
   }
+  bankIndex = 0;                            // index is set to zero to allow for
+                                            // multiple conversions per serail
+                                            // monitor connection
 }
 
 void morseCharConversion(char letter){
@@ -251,6 +276,7 @@ void morseCharConversion(char letter){
     case ' ':
       Serial.println(" ");
       delay(TIMEPERIOD * 7);
+      break;
     case '.':
       Serial.println(".-.-.-");
       dot();
@@ -260,6 +286,7 @@ void morseCharConversion(char letter){
       dot();
       dash();
       delay(TIMEPERIOD * 3);
+      break;
     case ',':
       Serial.println("--..--");
       dash();
@@ -269,6 +296,7 @@ void morseCharConversion(char letter){
       dash();
       dash();
       delay(TIMEPERIOD * 3);
+      break;
     case ':':
       Serial.println("---...");
       dash();
@@ -278,6 +306,7 @@ void morseCharConversion(char letter){
       dot();
       dot();
       delay(TIMEPERIOD * 3);
+      break;
     case '?':
       Serial.println("..--..");
       dot();
@@ -287,6 +316,7 @@ void morseCharConversion(char letter){
       dot();
       dot();
       delay(TIMEPERIOD * 3);
+      break;
     case '-':
       Serial.println("-....-");
       dash();
@@ -296,6 +326,7 @@ void morseCharConversion(char letter){
       dot();
       dash();
       delay(TIMEPERIOD * 3);
+      break;
     case '/':
       Serial.println("-..-.");
       dash();
@@ -304,6 +335,7 @@ void morseCharConversion(char letter){
       dash();
       dot();
       delay(TIMEPERIOD * 3);
+      break;
     case '('|')':
       Serial.println("-.--.-");
       dash();
@@ -313,6 +345,7 @@ void morseCharConversion(char letter){
       dot();
       dash();
       delay(TIMEPERIOD * 3);
+      break;
     case '"':
       Serial.println(".-..-.");
       dot();
@@ -322,6 +355,7 @@ void morseCharConversion(char letter){
       dash();
       dot();
       delay(TIMEPERIOD * 3);
+      break;
     case '@':
       Serial.println(".--.-.");
       dot();
@@ -331,6 +365,7 @@ void morseCharConversion(char letter){
       dash();
       dot();
       delay(TIMEPERIOD * 3);
+      break;
     case '=':
       Serial.println("-...-");
       dash();
@@ -339,86 +374,97 @@ void morseCharConversion(char letter){
       dot();
       dash();
       delay(TIMEPERIOD * 3);
-      case '0':
-        Serial.println("-----");
-        dash();
-        dash();
-        dash();
-        dash();
-        dash();
-        delay(TIMEPERIOD * 3);
-      case '1':
-        Serial.println(".----");
-        dot();
-        dash();
-        dash();
-        dash();
-        dash();
-        delay(TIMEPERIOD * 3);
-      case '2':
-        Serial.println("..---");
-        dot();
-        dot();
-        dash();
-        dash();
-        dash();
-        delay(TIMEPERIOD * 3);
-      case '3':
-        Serial.println("...--");
-        dot();
-        dot();
-        dot();
-        dash();
-        dash();
-        delay(TIMEPERIOD * 3);
-      case '4':
-        Serial.println("....-");
-        dot();
-        dot();
-        dot();
-        dot();
-        dash();
-        delay(TIMEPERIOD * 3);
-      case '5':
-        Serial.println(".....");
-        dot();
-        dot();
-        dot();
-        dot();
-        dot();
-        delay(TIMEPERIOD * 3);
-      case '6':
-        Serial.println("-....");
-        dash();
-        dot();
-        dot();
-        dot();
-        dot();
-        delay(TIMEPERIOD * 3);
-      case '7':
-        Serial.println("--...");
-        dash();
-        dash();
-        dot();
-        dot();
-        dot();
-        delay(TIMEPERIOD * 3);
-      case '8':
-        Serial.println("---..");
-        dash();
-        dash();
-        dash();
-        dot();
-        dot();
-        delay(TIMEPERIOD * 3);
-      case '9':
-        Serial.println("----.");
-        dash();
-        dash();
-        dash();
-        dash();
-        dot();
-        delay(TIMEPERIOD * 3);
+      break;
+    case '0':
+      Serial.println("-----");
+      dash();
+      dash();
+      dash();
+      dash();
+      dash();
+      delay(TIMEPERIOD * 3);
+      break;
+    case '1':
+      Serial.println(".----");
+      dot();
+      dash();
+      dash();
+      dash();
+      dash();
+      delay(TIMEPERIOD * 3);
+      break;
+    case '2':
+      Serial.println("..---");
+      dot();
+      dot();
+      dash();
+      dash();
+      dash();
+      delay(TIMEPERIOD * 3);
+      break;
+    case '3':
+      Serial.println("...--");
+      dot();
+      dot();
+      dot();
+      dash();
+      dash();
+      delay(TIMEPERIOD * 3);
+      break;
+    case '4':
+      Serial.println("....-");
+      dot();
+      dot();
+      dot();
+      dot();
+      dash();
+      delay(TIMEPERIOD * 3);
+      break;
+    case '5':
+      Serial.println(".....");
+      dot();
+      dot();
+      dot();
+      dot();
+      dot();
+      delay(TIMEPERIOD * 3);
+      break;
+    case '6':
+      Serial.println("-....");
+      dash();
+      dot();
+      dot();
+      dot();
+      dot();
+      delay(TIMEPERIOD * 3);
+      break;
+    case '7':
+      Serial.println("--...");
+      dash();
+      dash();
+      dot();
+      dot();
+      dot();
+      delay(TIMEPERIOD * 3);
+      break;
+    case '8':
+      Serial.println("---..");
+      dash();
+      dash();
+      dash();
+      dot();
+      dot();
+      delay(TIMEPERIOD * 3);
+      break;
+    case '9':
+      Serial.println("----.");
+      dash();
+      dash();
+      dash();
+      dash();
+      dot();
+      delay(TIMEPERIOD * 3);
+      break;
   }
 }
   
