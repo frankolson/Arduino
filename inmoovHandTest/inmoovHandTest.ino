@@ -52,7 +52,22 @@ void loop() {            // Loop through motion tests
   //alltorest();         // Uncomment to use this
   //delay(4000);         
   alltomax();            // close hand
-  delay(2000);           
+  delay(2000);
+
+  alltovirtual();        // open hand
+  delay(2000);                   
+  hangloose();           // hang loose configuration
+  delay(2000);
+  
+  alltovirtual();        // open hand
+  delay(2000);                   
+  hearts();              // ILU configuration
+  delay(2000);
+ 
+  alltovirtual();        // open hand
+  delay(2000);                   
+  point();            // pointing configuration
+  delay(2000);  
 }
 
 // Motion to set the servo into "virtual" 0 position: alltovirtual
@@ -102,3 +117,25 @@ void alltomax() {
   servoneck.write(180);
   servorothead.write(180);*/
 }
+
+// Hangloose hand sign
+void hangloose() {
+  servothumb.write(180);
+  servomajeure.write(180);
+  servoringfinger.write(180);
+}
+
+// sign of affection
+void hearts() {
+  servomajeure.write(180);
+  servoringfinger.write(180);
+}
+
+// Pointing configuration
+void point() {
+  servothumb.write(180);
+  servomajeure.write(180);
+  servoringfinger.write(180);
+  servopinky.write(180);
+}
+
