@@ -29,14 +29,19 @@ Servo servorothead;
 int fingerMin = 600;
 int fingerMax = 2400;
 
+// Define wrist potentiometer and value variable
+int potPin = 15;
+int value;
+
 // Setup Function
 void setup() { 
+  Serial.begin(9600);
   servothumb.attach(2,fingerMin, fingerMax);  
   servoindex.attach(3,fingerMin, fingerMax);  
   servomajeure.attach(4,fingerMin, fingerMax);
   servoringfinger.attach(5, fingerMin, fingerMax);
   servopinky.attach(6,fingerMin, fingerMax);
-  servowrist.attach(7);
+  servowrist.attach(7,fingerMin, fingerMax);
   servobiceps.attach(8);
   servorotate.attach(9);
   servoshoulder.attach(10);
@@ -47,27 +52,30 @@ void setup() {
 } 
 
 void loop() {            // Loop through motion tests
-  alltovirtual();        // open hand
-  delay(4000);           
+  //alltovirtual();        // open hand
+  //delay(4000);           
   //alltorest();         // Uncomment to use this
   //delay(4000);         
-  alltomax();            // close hand
-  delay(2000);
+  //alltomax();            // close hand
+  //delay(2000);
 
-  alltovirtual();        // open hand
-  delay(2000);                   
-  hangloose();           // hang loose configuration
-  delay(2000);
+  //alltovirtual();        // open hand
+  //delay(2000);                   
+  //hangloose();           // hang loose configuration
+  //delay(2000);
   
-  alltovirtual();        // open hand
-  delay(2000);                   
-  hearts();              // ILU configuration
-  delay(2000);
+  //alltovirtual();        // open hand
+  //delay(2000);                   
+  //hearts();              // ILU configuration
+  //delay(2000);
  
-  alltovirtual();        // open hand
-  delay(2000);                   
-  point();            // pointing configuration
-  delay(2000);  
+  //alltovirtual();        // open hand
+  //delay(2000);                   
+  //point();            // pointing configuration
+  //delay(2000);
+
+  // wirst control
+  potWrist();  
 }
 
 // Motion to set the servo into "virtual" 0 position: alltovirtual
@@ -137,5 +145,13 @@ void point() {
   servomajeure.write(180);
   servoringfinger.write(180);
   servopinky.write(180);
+}
+
+void potWrist(){
+  value = analogRead(potPin); // return values from 0 to 1023
+  value = map(value, 0, 1023, 0, 179); // converts from ohms to degres
+  servowrist.write(value);    // set postion of wrist
+  Serial.println(value);
+  delay(15);                  // delay next read for movement time
 }
 
