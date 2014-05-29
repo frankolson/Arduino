@@ -2,7 +2,7 @@
 InMoov Hand and Arm Test
 Frank Olson
 22 May 2014
-Last Edit: 22 May 2014
+Last Edit: 28 May 2014
 
 Original code taken from InMoov website and assumed code was developed 
 by Gael Langevin. Modified for use with the HK-15298 servos.
@@ -27,7 +27,7 @@ Servo servorothead;
 
 // Define Min and Max Pulse Signals
 int fingerMin = 600;
-int fingerMax = 2400;
+int fingerMax = 2300;
 
 // Define wrist potentiometer and value variable
 int potPin = 15;
@@ -41,7 +41,7 @@ void setup() {
   servomajeure.attach(4,fingerMin, fingerMax);
   servoringfinger.attach(5, fingerMin, fingerMax);
   servopinky.attach(6,fingerMin, fingerMax);
-  servowrist.attach(7,fingerMin, fingerMax);
+  servowrist.attach(7);
   servobiceps.attach(8);
   servorotate.attach(9);
   servoshoulder.attach(10);
@@ -59,23 +59,23 @@ void loop() {            // Loop through motion tests
   //alltomax();            // close hand
   //delay(2000);
 
-  //alltovirtual();        // open hand
-  //delay(2000);                   
-  //hangloose();           // hang loose configuration
-  //delay(2000);
+  alltovirtual();        // open hand
+  delay(2000);                   
+  hangloose();           // hang loose configuration
+  delay(2000);
   
-  //alltovirtual();        // open hand
-  //delay(2000);                   
-  //hearts();              // ILU configuration
-  //delay(2000);
+  alltovirtual();        // open hand
+  delay(2000);                   
+  hearts();              // ILU configuration
+  delay(2000);
  
-  //alltovirtual();        // open hand
-  //delay(2000);                   
-  //point();            // pointing configuration
-  //delay(2000);
+  alltovirtual();        // open hand
+  delay(2000);                   
+  point();            // pointing configuration
+  delay(2000);
 
   // wirst control
-  potWrist();  
+  //potWrist();  
 }
 
 // Motion to set the servo into "virtual" 0 position: alltovirtual
@@ -128,9 +128,9 @@ void alltomax() {
 
 // Hangloose hand sign
 void hangloose() {
-  servothumb.write(180);
   servomajeure.write(180);
   servoringfinger.write(180);
+  servoindex.write(180);
 }
 
 // sign of affection
